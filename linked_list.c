@@ -2,68 +2,125 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct node {
-    int data;
-    struct node* next;
-} Node;
-void addNode(Node** head, int data) {
-    Node* newNode = (Node*)malloc(sizeof(Node));
-    newNode->data = data;
-    newNode->next = NULL;
+#define MAX 10
+int top = -1;
 
-    if (*head == NULL) {
-        *head = newNode;
-    }
-    else {
-        Node* current = *head;
-        while (current->next != NULL) {
-            current = current->next;
-        }
-        current->next = newNode;
-    }
+typedef struct Node
+{
+	int data;
+	struct Node* next;
+}Node;
+
+Node* head;
+
+void init()
+{
+	head = NULL;
 }
-void removeNode(Node** head, int data) {
-    if (*head == NULL) {
-        return;
-    }
 
-    if ((*head)->data == data) {
-        Node* temp = *head;
-        *head = (*head)->next;
-        free(temp);
-        return;
-    }
-
-    Node* current = *head;
-    while (current->next != NULL && current->next->data != data) {
-        current = current->next;
-    }
-
-    if (current->next != NULL) {
-        Node* temp = current->next;
-        current->next = temp->next;
-        free(temp);
-    }
+void printList() {
+	Node* ptr;
+	if (head == NULL)
+	{
+		printf("list empty\n");
+		return;
+	}
+	for (ptr = head; ptr->next; ptr = ptr->next)
+	{
+		printf("%d->", ptr->data);
+	}
+	printf("%d\n", ptr->data);
 }
-void printList(Node* head) {
-    Node* current = head;
-    while (current != NULL) {
-        printf("%d ", current->data);
-        current = current->next;
-    }
-    printf("\n");
+
+int stack_full()
+{
+	if (top == MAX - 1)
+	{
+		return 1;
+	}
+	return 0;
 }
-int main() {
-    Node* head = NULL;
 
-    addNode(&head, 1);
-    addNode(&head, 2);
-    addNode(&head, 3);
-    addNode(&head, 4);
-    printList(head); // Ãâ·Â: 1 2 3 4
+void push(int data)
+{
+	if (stack_full())
+	{
+		printf("stack full\n");
+		return;
+	}
+	top++;
+	Node* ptr;
+	Node* newNode = (Node*)malloc(sizeof(Node));
 
-    removeNode(&head, 2);
-    printList(head);
+	newNode->data = data;
+	newNode->next = NULL;
 
-    return 0;
+	if (head == NULL)
+	{
+		head = newNode;
+	}
+	else
+	{
+		ptr = head;
+		while(ptr->next)
+		{
+			ptr = ptr->next;
+		}
+		ptr->next = newNode;
+	}
+}
+
+int stack_empty()
+{
+	if (top == -1)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+int pop()
+{
+	Node *prev, *cur;
+	cur = prev = head;
+	if (stack_empty())
+	{
+		printf("stack empty\n");
+		return -1;
+	}
+	top--;
+	if (cur->next == NULL)
+	{
+		head = NULL;
+		return cur->data;
+	}
+	else 
+	{
+		while (cur->next != NULL)
+		{
+			prev = cur;
+			cur = cur->next;
+		}
+		prev->next = NULL;
+		return cur->data;
+	}
+}
+
+int main()
+{
+	init();
+	pop();
+	push(10);
+	printList();
+	printf("pop: %d\n", pop());
+	printList();
+	for (int i = 1; i < 12; i++)
+	{
+		push(i * 10);
+	}
+	printList();
+	printf("pop: %d\n", pop());
+	printList();
+
+	return 0;
 }
