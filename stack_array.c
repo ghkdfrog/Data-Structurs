@@ -1,105 +1,122 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
-#define _CRT_SECURE_NO_WARNINGS
-
+#include <stdbool.h>
 #define MAX 10
-int top = -1;
-int stackArr[MAX];
-int stack_full()
+
+typedef struct
 {
-	int is_stack_full = 0;
-	if (top == MAX - 1)
-	{
-		is_stack_full = 1;
-	}
-	return is_stack_full;
+	int top;
+	int data[MAX];
+}Stack;
+
+Stack stack;
+
+void stack_init()
+{
+	stack.top = -1;
 }
+
 int stack_empty()
 {
-	int is_stack_empty = 0;
-	if (top == -1)
+	if (stack.top == -1)
 	{
-		is_stack_empty = 1;
+		return 1;
 	}
-	return is_stack_empty;
+	return 0;
 }
+
+int stack_full()
+{
+	if (stack.top == MAX - 1)
+	{
+		return 1;
+	}
+	return 0;
+}
+
 void push(int item)
 {
-	top++;
-	stackArr[top] = item;
-	return;
-}
-int pop()
-{
-	int pop_num;
-	pop_num = stackArr[top];
-	top--;
-	return pop_num;
-}
-int stack_array()
-{
-	int pop_num;
-	if (stack_empty())
-	{
-		printf("stack empty!\n");
-	}
-	else
-	{
-		pop_num = pop();
-		printf("pop num: %d\n", pop_num);
-	}
-
-	for (int i = 1; i <= 12; i++)
-	{
-		if (stack_full())
-		{
-			printf("stack full!\n");
-			continue;
-		}
-		push(i);
-	}
-	for (int i = 0; i <= top; i++)
-	{
-		printf("%d ", stackArr[i]);
-	}
-	printf("\n");
-	for (int i = 0; i < 5; i++)
-	{
-		if (stack_empty())
-		{
-			printf("stack empty!\n");
-		}
-		else
-		{
-			pop_num = pop();
-			printf("pop num: %d\n", pop_num);
-		}
-	}
-	for (int i = 0; i <= top; i++)
-	{
-		printf("%d ", stackArr[i]);
-	}
-	printf("\n");
-	int get_num;
 	if (stack_full())
 	{
-		printf("stack full!\n");
+		printf("	stack full\n");
+		return;
 	}
-	else
-	{
-		printf("Enter a number to push: ");
-		if (scanf_s("%d", &get_num) != 1) // scanf 대신 scanf_s 사용
-		{
-			printf("Invalid input!\n");
-			return 1;
-		}
-		push(get_num);
-	}
+	stack.top++;
+	stack.data[stack.top] = item;
+}
 
-	for (int i = 0; i <= top; i++)
+int pop()
+{
+	if (stack_empty())
 	{
-		printf("%d ", stackArr[i]);
+		printf("	stack empty\n");
+		return -1;
+	}
+	int pop_item;
+	pop_item = stack.data[stack.top];
+	stack.top--;
+	return pop_item;
+}
+
+void stack_print()
+{
+	if (stack_empty())
+	{
+		printf("	stack empty\n");
+		return;
+	}
+	for (int i = 0; i <= stack.top; i++)
+	{
+		printf("[%d] ", stack.data[i]);
 	}
 	printf("\n");
+}
+
+int main()
+{
+	stack_init();
+	printf("push : 1\n");
+	printf("pop : 2\n");
+	printf("print stack : p\n");
+	printf("quit program : q\n");
+	
+	bool bol = true;
+
+	char key;
+	int item;
+	while (bol) {
+		printf("put key : ");
+		scanf(" %c", &key);
+
+		switch (key) {
+		case '1':
+			while (1)
+			{
+				printf("	item to push : ");
+				scanf(" %d", &item);
+				if (item < 0)
+				{
+					printf("	item is bigger than 0\n");
+					continue;
+				}
+				push(item);
+				break;
+			}
+			break;
+		case '2':
+			printf("	pop data: %d\n", pop());
+			break;
+		case 'q':
+			bol = false;
+			break;
+		case 'p':
+			stack_print();
+			break;
+		default:
+			printf("	wrong key\n");
+			break;
+		}
+	}
 	return 0;
 }
