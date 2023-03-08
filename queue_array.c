@@ -1,80 +1,113 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
-#define _CRT_SECURE_NO_WARNINGS
+#include <stdbool.h>
+
 #define MAX 10
-int front = -1;
-int rear = -1;
-int queueArr[MAX];
+
+typedef struct
+{
+	int front;
+	int rear;
+	int data[MAX];
+}Queue;
+
+Queue queue;
+
+void queue_init()
+{
+	queue.front = -1;
+	queue.rear = -1;
+}
+
+int queue_full()
+{
+	return (queue.rear == MAX - 1);
+}
+
+int queue_empty()
+{
+	return (queue.front == queue.rear);
+}
 
 void enqueue(int item)
 {
 	if (queue_full())
 	{
-		printf("queue full!\n");
+		printf("	queue full\n");
 		return;
 	}
-	rear++;
-	queueArr[rear] = item;
-	return;
+	queue.data[++queue.rear] = item;
 }
+
 int dequeue()
 {
 	if (queue_empty())
 	{
-		printf("queue empty!\n");
+		printf("	queue empty\n");
+		return -1;
+	}
+	return queue.data[++queue.front];
+}
+
+void queue_print()
+{
+	if (queue_empty())
+	{
+		printf("	queue empty\n");
 		return;
 	}
-	int dequeue_item;
-	front++;
-	dequeue_item = queueArr[front];
-	return dequeue_item;
-}
-int queue_full()
-{
-	int is_queue_full = 0;
-	if (rear == MAX-1)
+	for (int i = queue.front + 1; i <= queue.rear; i++)
 	{
-		is_queue_full = 1;
+		printf("[%d] ", queue.data[i]);
 	}
-	return is_queue_full;
+	printf("\n");
 }
-int queue_empty()
-{
-	int is_queue_empty = 0;
-	if (front == rear)
-	{
-		is_queue_empty = 1;
-	}
-	
-	return is_queue_empty;
-}
-int queue_array()
-{
-	dequeue();
 
-	enqueue(1);
-	for (int i = front + 1; i <= rear; i++)
-	{
-		printf("%d ", queueArr[i]);
-	}
-	printf("\n");
-	dequeue();
-	dequeue();
-	for (int i = 2; i <= 11 ; i++)
-	{
-		enqueue(i);
-	}
-	for (int i = front + 1; i <= rear; i++)
-	{
-		printf("%d ", queueArr[i]);
-	}
-	printf("\n");
-	dequeue();
-	for (int i = front + 1; i <= rear; i++)
-	{
-		printf("%d ", queueArr[i]);
-	}
-	printf("\n");
+int main()
+{
+	queue_init();
+	printf("enqueue : 1\n");
+	printf("dequeue : 2\n");
+	printf("print queue : p\n");
+	printf("quit program : q\n");
 
+	bool bol = true;
+
+	char key;
+	int item;
+	while (bol) {
+		printf("put key : ");
+		scanf(" %c", &key);
+
+		switch (key) {
+		case '1':
+			while (1)
+			{
+				printf("	item to enqueue : ");
+				scanf(" %d", &item);
+				if (item < 0)
+				{
+					printf("	item is bigger than 0\n");
+					continue;
+				}
+				enqueue(item);
+				break;
+			}
+			break;
+		case '2':
+			printf("	dequeue data: %d\n", dequeue());
+			break;
+		case 'q':
+			bol = false;
+			break;
+		case 'p':
+			queue_print();
+			break;
+		default:
+			printf("	wrong key\n");
+			break;
+		}
+	}
 	return 0;
 }

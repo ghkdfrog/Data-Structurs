@@ -19,20 +19,12 @@ void stack_init()
 
 int stack_empty()
 {
-	if (stack.top == -1)
-	{
-		return 1;
-	}
-	return 0;
+	return (stack.top == -1);
 }
 
 int stack_full()
 {
-	if (stack.top == MAX - 1)
-	{
-		return 1;
-	}
-	return 0;
+	return (stack.top == MAX - 1);
 }
 
 void push(int item)
@@ -42,8 +34,7 @@ void push(int item)
 		printf("	stack full\n");
 		return;
 	}
-	stack.top++;
-	stack.data[stack.top] = item;
+	stack.data[++stack.top] = item;
 }
 
 int pop()
@@ -53,10 +44,7 @@ int pop()
 		printf("	stack empty\n");
 		return -1;
 	}
-	int pop_item;
-	pop_item = stack.data[stack.top];
-	stack.top--;
-	return pop_item;
+	return stack.data[stack.top--];
 }
 
 void stack_print()
@@ -86,18 +74,19 @@ int main()
 	char key;
 	int item;
 	while (bol) {
+		
 		printf("put key : ");
 		scanf(" %c", &key);
-
 		switch (key) {
 		case '1':
 			while (1)
 			{
+				while (getchar() != '\n');
 				printf("	item to push : ");
 				scanf(" %d", &item);
 				if (item < 0)
 				{
-					printf("	item is bigger than 0\n");
+					printf("	item is negetive or not number\n");
 					continue;
 				}
 				push(item);
@@ -118,5 +107,17 @@ int main()
 			break;
 		}
 	}
+
+	int test;
+	scanf("%d", &test);
+	if (!test)
+	{
+		printf("not num");
+	}
+	else
+	{
+		printf("%d", test);
+	}
+
 	return 0;
 }
