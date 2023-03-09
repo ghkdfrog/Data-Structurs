@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define MAX 3
+#define MAX 10
 
 typedef struct
 {
@@ -14,7 +14,7 @@ typedef struct
 
 Queue queue;
 
-void queue_init()
+void queue_init() //queue initialize
 {
 	queue.front = -1;
 	queue.rear = -1;
