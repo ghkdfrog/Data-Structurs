@@ -29,31 +29,17 @@ int stack_full()
 
 void push(int item)
 {
-	if (stack_full())
-	{
-		printf("	stack full\n");
-		return;
-	}
 	stack.data[++stack.top] = item;
 }
 
 int pop()
 {
-	if (stack_empty())
-	{
-		printf("	stack empty\n");
-		return -1;
-	}
 	return stack.data[stack.top--];
 }
 
 void stack_print()
 {
-	if (stack_empty())
-	{
-		printf("	stack empty\n");
-		return;
-	}
+	printf(" stack : ");
 	for (int i = 0; i <= stack.top; i++)
 	{
 		printf("[%d] ", stack.data[i]);
@@ -79,6 +65,11 @@ int main()
 		scanf(" %c", &key);
 		switch (key) {
 		case '1':
+			if (stack_full())
+			{
+				printf("stack full\n");
+				break;
+			}
 			while (1)
 			{
 				while (getchar() != '\n');
@@ -94,12 +85,22 @@ int main()
 			}
 			break;
 		case '2':
+			if (stack_empty())
+			{
+				printf("	stack empty\n");
+				break;
+			}
 			printf("	pop data: %d\n", pop());
 			break;
 		case 'q':
 			bol = false;
 			break;
 		case 'p':
+			if (stack_empty())
+			{
+				printf("	stack empty\n");
+				break;
+			}
 			stack_print();
 			break;
 		default:
@@ -107,17 +108,5 @@ int main()
 			break;
 		}
 	}
-
-	int test;
-	scanf("%d", &test);
-	if (!test)
-	{
-		printf("not num");
-	}
-	else
-	{
-		printf("%d", test);
-	}
-
 	return 0;
 }

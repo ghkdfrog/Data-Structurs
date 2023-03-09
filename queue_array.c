@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define MAX 10
+#define MAX 3
 
 typedef struct
 {
@@ -32,31 +32,17 @@ int queue_empty()
 
 void enqueue(int item)
 {
-	if (queue_full())
-	{
-		printf("	queue full\n");
-		return;
-	}
 	queue.data[++queue.rear] = item;
 }
 
 int dequeue()
 {
-	if (queue_empty())
-	{
-		printf("	queue empty\n");
-		return -1;
-	}
 	return queue.data[++queue.front];
 }
 
 void queue_print()
 {
-	if (queue_empty())
-	{
-		printf("	queue empty\n");
-		return;
-	}
+	printf(" queue : ");
 	for (int i = queue.front + 1; i <= queue.rear; i++)
 	{
 		printf("[%d] ", queue.data[i]);
@@ -82,6 +68,11 @@ int main()
 
 		switch (key) {
 		case '1':
+			if (queue_full())
+			{
+				printf("	queue full\n");
+				break;
+			}
 			while (1)
 			{
 				printf("	item to enqueue : ");
@@ -96,12 +87,22 @@ int main()
 			}
 			break;
 		case '2':
+			if (queue_empty())
+			{
+				printf("	queue empty\n");
+				break;
+			}
 			printf("	dequeue data: %d\n", dequeue());
 			break;
 		case 'q':
 			bol = false;
 			break;
 		case 'p':
+			if (queue_empty())
+			{
+				printf("	queue empty\n");
+				break;
+			}
 			queue_print();
 			break;
 		default:
