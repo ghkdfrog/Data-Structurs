@@ -11,12 +11,7 @@ typedef struct Node
 	struct Node* next;
 }Node;
 
-Node* head;
-
-void init()
-{
-	head = NULL;
-}
+Node* head = NULL;
 
 int stack_full()
 {
@@ -24,7 +19,7 @@ int stack_full()
 	{
 		return 1;
 	}
-	return 0;
+	return 0; // return 0 if the above condition is false
 }
 
 void push(int data)
@@ -57,7 +52,7 @@ int stack_empty()
 	{
 		return 1;
 	}
-	return 0;
+	return 0; //return 0only if the above condition is false
 }
 
 int pop()
@@ -65,10 +60,11 @@ int pop()
 	top--;
 	Node* prev, * cur;
 	cur = prev = head;
+	int pop_data;
 	if (cur->next == NULL)
 	{
 		head = NULL;
-		return cur->data;
+		pop_data = cur->data;
 	}
 	else
 	{
@@ -78,10 +74,17 @@ int pop()
 			cur = cur->next;
 		}
 		prev->next = NULL;
-		return cur->data;
+		pop_data = cur->data;
 	}
+	return pop_data;
 }
 
+
+// helper function: run a series of pushes
+
+// input arguments: int item[] <- an array from which input values are taken
+
+// input arguments: int count <- total number of elements to push
 void run_push(int item[], int count)
 {
 	for (int i = 0; i < count; i++)
@@ -95,6 +98,9 @@ void run_push(int item[], int count)
 	}
 }
 
+// helper function: run a series of pops
+
+// input argument: int count <- total number of elements to pop
 void run_pop(int count)
 {
 	for (int i = 0; i < count; i++)
@@ -108,30 +114,31 @@ void run_pop(int count)
 	}
 }
 
+// helper function : print the current stack
 void printStack() {
 	Node* ptr;
+	ptr = head;
 	if (stack_empty())
 	{
 		printf("stack empty\n");
 		return;
 	}
-	for (ptr = head; ptr->next; ptr = ptr->next)
+	printf("stack : ");
+	for (int i = 0; i <= top; i++)
 	{
 		printf("%d ", ptr->data);
+		ptr = ptr->next;
 	}
-	printf("%d\n", ptr->data);
+	printf("\n");
 }
 
 int main()
 {
-	int items[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
-	init();
+	int items[] = { 3, 9, 4, 5, 2, 1, 6, 8, 7, 5, 8 };
 	run_push(items, 5);
-	printStack();
 	run_pop(3);
-	run_push(items, 11);
-	printStack();
+	run_push(items, 10);
 	run_pop(11);
-
+	
 	return 0;
 }

@@ -2,34 +2,27 @@
 #include <stdlib.h>
 #define MAX 10
 typedef struct _Node {
-    int data;            /* 저장할 데이터 */
-    struct _Node* next;    /* 다음 노드를 가리킬 포인터*/
+    int data;          
+    struct _Node* next;   
 }Node;
-Node* head;
 
+Node* head = NULL;
 int front = -1;
 int rear = -1;
 
-void init()
-{
-    head = NULL;
-}
 int queue_full()
 {
-    if (rear == MAX - 1)
+    if (rear >= MAX - 1)
     {
         return 1;
     }
-    return 0;
+    return 0; //return 0 only if the above condition is false
 }
 void enqueue(int data)
 {
-    if (queue_full())
-    {
-        printf("queue full\n");
-        return;
-    }
     rear++;
+    if (front <= -1) // increase front only initially
+        front++;
     Node* ptr = head;
     Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->data = data;
@@ -50,48 +43,82 @@ void enqueue(int data)
 }
 int queue_empty()
 {
-    if (front == rear)
+    if (front == -1 || front>rear) // front can not be greater than rear
     {
         return 1;
     }
-    return 0;
+    return 0; // return 0 only if the above condition is false
 }
 int dequeue()
+{
+    front++;
+    int dequeue_data;
+    Node* cur = head;
+    dequeue_data = cur->data;
+    head = cur->next;
+    free(cur);
+    return dequeue_data;
+}
+
+//helper function: print the current queue
+void printQueue()
 {
     if (queue_empty())
     {
         printf("queue empty\n");
         return;
     }
-    front++;
-    int dequeue_data;
-    Node* cur = head;
-    dequeue_data = cur->data;
-    head = cur->next;
-    cur->next = NULL;
-    free(cur);
-    return dequeue_data;
-}
-void printList()
-{
     Node* ptr;
-    for (ptr = head; ptr->next; ptr = ptr->next)
+    ptr = head;
+    printf("queue : ");
+    for (int i = front; i <= rear; i++)
     {
-        printf("%d->", ptr->data);
+        printf("%d ", ptr->data);
+        ptr = ptr->next;
     }
-    printf("%d\n", ptr->data);
+    printf("\n");
 }
+
+//helper function : run a series of enqueues
+//int item[] : an array from wich input values are taken
+//int count : total number of elemets to enqueue
+void run_enqueue(int item[], int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        if (queue_full())
+        {
+            printf("queue full\n");
+            return;
+        }
+        enqueue(item[i]);
+    }
+}
+
+//helper function : run a series of dequeues
+//int count : total number of elements to dequeue.
+void run_dequeue(int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        if (queue_empty())
+        {
+            printf("queue empty\n");
+            return;
+        }
+        printf("-> %d\n", dequeue());
+    }
+}
+
 int main()
 {
-    init();
-    enqueue(100);
-    printList();
-    printf("dequeue: %d\n", dequeue());
-    dequeue();
-    for (int i = 1; i < 12; i++)
-    {
-        enqueue(i * 10);
-    }
-    printList();
+    int items[] = { 3, 9, 4, 5, 2, 1, 6, 8, 7, 5, 8 };
+    printQueue();
+    run_enqueue(items, 5);
+    run_dequeue(3);
+    run_enqueue(items, 10);
+    run_dequeue(11);
+    run_enqueue(items, 3);
+
     return 0;
 }
