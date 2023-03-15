@@ -18,20 +18,6 @@ void init()
 	head = NULL;
 }
 
-void printList() {
-	Node* ptr;
-	if (head == NULL)
-	{
-		printf("list empty\n");
-		return;
-	}
-	for (ptr = head; ptr->next; ptr = ptr->next)
-	{
-		printf("%d->", ptr->data);
-	}
-	printf("%d\n", ptr->data);
-}
-
 int stack_full()
 {
 	if (top == MAX - 1)
@@ -43,11 +29,6 @@ int stack_full()
 
 void push(int data)
 {
-	if (stack_full())
-	{
-		printf("stack full\n");
-		return;
-	}
 	top++;
 	Node* ptr;
 	Node* newNode = (Node*)malloc(sizeof(Node));
@@ -62,7 +43,7 @@ void push(int data)
 	else
 	{
 		ptr = head;
-		while(ptr->next)
+		while (ptr->next)
 		{
 			ptr = ptr->next;
 		}
@@ -81,20 +62,15 @@ int stack_empty()
 
 int pop()
 {
-	Node *prev, *cur;
-	cur = prev = head;
-	if (stack_empty())
-	{
-		printf("stack empty\n");
-		return -1;
-	}
 	top--;
+	Node* prev, * cur;
+	cur = prev = head;
 	if (cur->next == NULL)
 	{
 		head = NULL;
 		return cur->data;
 	}
-	else 
+	else
 	{
 		while (cur->next != NULL)
 		{
@@ -106,21 +82,56 @@ int pop()
 	}
 }
 
+void run_push(int item[], int count)
+{
+	for (int i = 0; i < count; i++)
+	{
+		if (stack_full())
+		{
+			printf("stack full\n");
+			return;
+		}
+		push(item[i]);
+	}
+}
+
+void run_pop(int count)
+{
+	for (int i = 0; i < count; i++)
+	{
+		if (stack_empty())
+		{
+			printf("stack empty\n");
+			return;
+		}
+		printf("-> %d\n", pop());
+	}
+}
+
+void printStack() {
+	Node* ptr;
+	if (stack_empty())
+	{
+		printf("stack empty\n");
+		return;
+	}
+	for (ptr = head; ptr->next; ptr = ptr->next)
+	{
+		printf("%d ", ptr->data);
+	}
+	printf("%d\n", ptr->data);
+}
+
 int main()
 {
+	int items[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
 	init();
-	pop();
-	push(10);
-	printList();
-	printf("pop: %d\n", pop());
-	printList();
-	for (int i = 1; i < 12; i++)
-	{
-		push(i * 10);
-	}
-	printList();
-	printf("pop: %d\n", pop());
-	printList();
+	run_push(items, 5);
+	printStack();
+	run_pop(3);
+	run_push(items, 11);
+	printStack();
+	run_pop(11);
 
 	return 0;
 }
