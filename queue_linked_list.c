@@ -1,80 +1,75 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define MAX 10
+
 typedef struct _Node {
     int data;          
     struct _Node* next;   
 }Node;
 
-Node* head = NULL;
-int front = -1;
-int rear = -1;
+Node* front = NULL;
+Node* rear = NULL;
 
 int queue_full()
 {
-    if (rear >= MAX - 1)
+    if (queue_empty())
+        return 0;
+    Node* ptr = front;
+    int i = 0;
+    while (ptr != rear)
     {
-        return 1;
+        i++;
+        ptr = ptr->next;
     }
-    return 0; //return 0 only if the above condition is false
+    if (i >= MAX-1)
+        return 1;
+    return 0;
 }
+
+int queue_empty()
+{
+    if (front == NULL)
+        return 1;
+    return 0;
+}
+
 void enqueue(int data)
 {
-    rear++;
-    if (front <= -1) // increase front only initially
-        front++;
-    Node* ptr = head;
     Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->data = data;
     newNode->next = NULL;
+    if (front == NULL)
+    {
+        rear = newNode;
+        front = newNode;
+        return;
+    }
+    rear->next = newNode;
+    rear = newNode;
+}
 
-    if (head == NULL)
-    {
-        head = newNode;
-    }
-    else
-    {
-        while (ptr->next != NULL)
-        {
-            ptr = ptr->next;
-        }
-        ptr->next = newNode;
-    }
-}
-int queue_empty()
-{
-    if (front == -1 || front>rear) // front can not be greater than rear
-    {
-        return 1;
-    }
-    return 0; // return 0 only if the above condition is false
-}
 int dequeue()
 {
-    front++;
-    int dequeue_data;
-    Node* cur = head;
-    dequeue_data = cur->data;
-    head = cur->next;
-    free(cur);
-    return dequeue_data;
+    Node* del;
+    int temp = front->data;
+    del = front;
+    front = front->next;
+    free(del);
+    return temp;
 }
 
 //helper function: print the current queue
-void printQueue()
+void print_queue()
 {
     if (queue_empty())
     {
         printf("queue empty\n");
         return;
     }
-    Node* ptr;
-    ptr = head;
     printf("queue : ");
-    for (int i = front; i <= rear; i++)
+    for (Node* ptr = front; ptr != NULL; ptr = ptr->next)
     {
         printf("%d ", ptr->data);
-        ptr = ptr->next;
     }
     printf("\n");
 }
@@ -106,14 +101,14 @@ void run_dequeue(int count)
             printf("queue empty\n");
             return;
         }
-        printf("-> %d\n", dequeue());
+        printf(" -> %d\n", dequeue());
     }
 }
 
 int main()
 {
     int items[] = { 3, 9, 4, 5, 2, 1, 6, 8, 7, 5, 8 };
-    printQueue();
+    print_queue();
     run_enqueue(items, 5);
     run_dequeue(3);
     run_enqueue(items, 10);

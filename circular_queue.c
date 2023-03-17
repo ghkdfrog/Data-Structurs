@@ -1,114 +1,101 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
+#include<stdio.h>
 
-#define MAX 6
+#define MAX 6 // valid MAX will be 5, to distinguish full and empty state. one index must not fill.
 
-typedef struct
-{
-	int front;
-	int rear;
-	int data[MAX];
-}Queue;
-
-Queue queue;
-
-void queue_init()
-{
-	queue.front = 0;
-	queue.rear = 0;
-}
-
-void enqueue(int item)
-{
-	queue.data[(queue.rear++)%MAX] = item;
-}
-
-int dequeue()
-{
-	return queue.data[(queue.front++) & MAX];
-}
+int queue[MAX];
+int rear = -1;
+int front = -1;
 
 int queue_full()
 {
-	return (queue.rear + 1) % MAX == queue.front;
+	if (front % MAX == (rear + 2) % MAX) // consider the full condition with remainder operator
+		return 1;
+	return 0; // return 0 if the above condition false.
 }
 
 int queue_empty()
 {
-	return queue.rear == queue.front;
+	if (front == -1||(rear < front)) // front will greater than rear when queue empty.
+		return 1;
+	return 0; // return 0 if the above condition false.
 }
 
+void enqueue(int item)
+{
+	if (front == -1)
+		front++;
+	rear++;
+	queue[rear % MAX] = item; // input data with remainder of rear.
+	printf("front : %d rear : %d\n", front, rear);
+}
+
+int dequeue()
+{
+	printf("front : %d rear : %d\n", front, rear);
+	int temp;
+	temp = queue[front % MAX]; // return data with remainder of front.
+	front++;
+	return temp;
+}
+
+// helper function : print current queue.
 void print_queue()
 {
-	printf(" queue : ");
-	for (int i = queue.front; i < queue.rear; i++)
+	if (queue_empty())
 	{
-		printf("[%d] ", queue.data[i%MAX]);
+		printf("queue underflow\n");
+		return;
+	}
+	printf("queue : ");
+	for (int i = front; i <= rear; i++) //repeat printf with the number between front and rear.
+	{
+		printf("[%d] ", queue[i%MAX]);
 	}
 	printf("\n");
 }
 
+// helper function : run a series of enqueue.
+// int item[] : an array fron wich input values are taken
+// int count : total numbers of elements to enqueue.
+void run_enqueue(int item[], int count)
+{
+	for (int i = 0; i < count; i++)
+	{
+		if (queue_full())
+		{
+			printf("queue overflow\n");
+			return;
+		}
+		enqueue(item[i]);
+	}
+}
+
+// helper function: run a series of dequeue.
+// input argument: int count <- total number of elements to dequeue.
+void run_dequeue(int count)
+{
+	for (int i = 0; i < count; i++)
+	{
+		if (queue_empty())
+		{
+			printf("queue underflow\n");
+			return;
+		}
+		printf(" -> %d\n", dequeue());
+	}
+}
+
 int main()
 {
-	queue_init();
-	printf("enqueue : 1\n");
-	printf("dequeue : 2\n");
-	printf("print queue : p\n");
-	printf("quit program : q\n");
-
-	bool bol = true;
-
-	char key;
-	int item;
-	while (bol) {
-		printf("put key : ");
-		scanf(" %c", &key);
-
-		switch (key) {
-		case '1':
-			if (queue_full())
-			{
-				printf("	queue full\n");
-				break;
-			}
-			while (1)
-			{
-				printf("	item to enqueue : ");
-				scanf(" %d", &item);
-				if (item < 0)
-				{
-					printf("	item is bigger than 0\n");
-					continue;
-				}
-				enqueue(item);
-				break;
-			}
-			break;
-		case '2':
-			if (queue_empty())
-			{
-				printf("	queue empty\n");
-				break;
-			}
-			printf("	dequeue data: %d\n", dequeue());
-			break;
-		case 'q':
-			bol = false;
-			break;
-		case 'p':
-			if (queue_empty())
-			{
-				printf("	queue empty\n");
-				break;
-			}
-			print_queue();
-			break;
-		default:
-			printf("	wrong key\n");
-			break;
-		}
-	}
+	int item[] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+	print_queue();
+	run_enqueue(item, 6);
+	print_queue();
+	run_dequeue(2);
+	print_queue();
+	run_dequeue(4);
+	run_enqueue(item, 2);
+	print_queue();
+	run_dequeue(3);
 	return 0;
 }
